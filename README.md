@@ -68,7 +68,7 @@ Other measures:
 ### 2. Local development
 
 ```bash
-cp .env.example .env.local   # fill in the URL, anon key and ADMIN_USER_ID
+cp .env .env.local   # fill in the URL, anon key and ADMIN_USER_ID
 npm install
 npm run dev
 ```

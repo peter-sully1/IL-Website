@@ -1,8 +1,8 @@
 "use server";
 
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
 
 export type FormState = { error?: string } | undefined;
 

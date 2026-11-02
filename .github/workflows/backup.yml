@@ -8,21 +8,32 @@ on:
 jobs:
   backup:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+      # Must match (or be newer than) the Postgres version shown in
+      # Supabase → Project Settings → Infrastructure.
+      PG_IMAGE: postgres:17
     steps:
-      - name: Install PostgreSQL client
+      - name: Check the secret is set
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq postgresql-client
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::SUPABASE_DB_URL is not set. Add it in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
 
       - name: Dump database
-        env:
-          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           mkdir -p backup
-          pg_dump "$DATABASE_URL" --schema=public --no-owner --no-privileges \
-            --file=backup/public-$(date +%F).sql
-          pg_dump "$DATABASE_URL" --data-only --schema=storage --table=storage.objects \
-            --file=backup/storage-objects-$(date +%F).sql
+          stamp=$(date +%F)
+          # pg_dump runs from the official Postgres image so its version
+          # always matches the server, whatever the runner ships with.
+          docker run --rm -v "$PWD/backup:/backup" -e DATABASE_URL "$PG_IMAGE" \
+            pg_dump "$DATABASE_URL" --schema=public --no-owner --no-privileges \
+            --file="/backup/public-$stamp.sql"
+          docker run --rm -v "$PWD/backup:/backup" -e DATABASE_URL "$PG_IMAGE" \
+            pg_dump "$DATABASE_URL" --data-only --table=storage.objects \
+            --file="/backup/storage-objects-$stamp.sql"
+          ls -lh backup
 
       - name: Upload backup
         uses: actions/upload-artifact@v4

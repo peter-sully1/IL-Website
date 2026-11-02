@@ -1,12 +1,12 @@
 # Bait al-Elmi Learning Centre
 
-Website for a community Islamic learning centre, with a private admin area where the centre's owner writes and publishes articles herself.
+Website for a community Islamic learning centre, with a private admin area where the centre's owner writes and publishes articles.
 
 **Stack:** Next.js 16 (App Router, Server Actions, ISR) · Supabase (Postgres, Auth, Storage) · Tiptap editor · TypeScript · Vercel
 
 ## How it works
 
-```
+```text
 Public (static, cached)                 Admin (dynamic, signed in)
 ──────────────────────                  ──────────────────────────
 /  /about  /events  /shop               /login → /login/mfa (if enabled)
@@ -30,7 +30,7 @@ Public (static, cached)                 Admin (dynamic, signed in)
 Authorisation is enforced in three independent layers, so a mistake in one doesn't open the site:
 
 | Layer | Where | What it does |
-|---|---|---|
+| --- | --- | --- |
 | Proxy | `proxy.ts` | Refreshes the session and redirects signed-out visitors away from `/admin`. Convenience only; never relied on. |
 | App | `lib/auth.ts` → `requireAdmin()` | Called by **every** admin page and Server Action. Verifies the session with Supabase, checks the user is `ADMIN_USER_ID`, and requires the second factor if one is set up. |
 | Database | `supabase/migrations/0001_init.sql` | Row-level security: anyone can read published articles; only users in `admins` can write. Storage policies do the same for images. |
@@ -56,11 +56,11 @@ Other measures:
 
 1. Create a project at [supabase.com](https://supabase.com).
 2. **Authentication → Sign In / Providers:** turn off **Allow new users to sign up**. Keep Email enabled.
-3. **Authentication → Users → Add user:** create the admin with her email and a strong password. Tick *Auto confirm*. Copy the user's **UID**.
+3. **Authentication → Users → Add user:** create the admin with email and a strong password. Tick *Auto confirm*. Copy the user's **UID**.
 4. **SQL Editor:** run `supabase/migrations/0001_init.sql`, then add her to the admin list:
 
    ```sql
-   insert into public.admins (user_id) values ('<her-user-id>');
+   insert into public.admins (user_id) values ('<user-id>');
    ```
 
 5. **Project Settings → API:** copy the project URL and the anon (publishable) key.
@@ -100,7 +100,7 @@ The dump includes article text and the image file *list*, not the image files th
 
 ## Project structure
 
-```
+```text
 app/
   (site)/             public pages with the site header and footer
     articles/         article list and article pages (ISR)

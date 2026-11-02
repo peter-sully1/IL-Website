@@ -78,7 +78,7 @@ Open <http://localhost:3000/login>.
 ### 3. Deploy to Vercel
 
 1. Push the repo to GitHub and import it in Vercel.
-2. Add the four variables from `.env.example` in Project Settings → Environment Variables. Set `NEXT_PUBLIC_SITE_URL` to the live URL.
+2. Add the four variables from `.env` in Project Settings → Environment Variables. Set `NEXT_PUBLIC_SITE_URL` to the live URL.
 3. In Supabase **Authentication → URL Configuration**, set the Site URL to the live URL.
 
 ### 4. Turn on the authenticator app (recommended)

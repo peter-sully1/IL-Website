@@ -17,6 +17,7 @@ export type SaveState =
 
 function revalidateArticle(...slugs: (string | null | undefined)[]) {
   revalidatePath("/articles");
+  revalidatePath("/sitemap.xml");
   for (const slug of new Set(slugs)) if (slug) revalidatePath(`/articles/${slug}`);
 }
 
